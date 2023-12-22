@@ -171,7 +171,7 @@ const DashboardHome = () => {
                         <div className="form-control">
                             <button
                                 type="submit"
-                                className="btn bg-gradient-to-r from-purple-500 to-pink-500 text-white  p-2 rounded-none mt-4">
+                                className="btn bg-gray-800 hover:bg-gray-900 border-0 text-white  p-2 rounded-lg mt-4">
                                 <FaPlus />Add Task
                             </button>
                         </div>
