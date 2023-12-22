@@ -1,21 +1,22 @@
 
 import { LuArrowDownUp } from "react-icons/lu";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
-import { GiCheckMark } from "react-icons/gi";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Task from "./Task";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic/useAxiosPublic";
+import axios from "axios";
 
 const DashboardHome = () => {
+    const axiosPublic = useAxiosPublic()
 
     const { data: tasks = [], refetch } = useQuery({
         queryKey: ['shopUser'],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:5000/tasks`)
+            const res = await axios.get(`https://task-manager-server-six-kappa.vercel.app/tasks`)
             return res.data
         }
     })
@@ -31,7 +32,7 @@ const DashboardHome = () => {
             deadlines: data.deadlines,
             priority: data.priority
         }
-        const productResponse = await axios.post('http://localhost:5000/tasks', newTask)
+        const productResponse = await axios.post('https://task-manager-server-six-kappa.vercel.app/tasks', newTask)
         if (productResponse.data.insertedId) {
             refetch()
             Swal.fire({
@@ -43,6 +44,33 @@ const DashboardHome = () => {
             });
             reset()
         }
+    }
+
+    const handleDelete = id => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Want to delete this product?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`https://task-manager-server-six-kappa.vercel.app/tasks/${id}`)
+                    .then(res => {
+                        if (res.data.deletedCount > 0) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: `task has been deleted.`,
+                                icon: "success"
+                            });
+                            refetch()
+                        }
+                    })
+            }
+        });
+
     }
 
     return (
@@ -64,7 +92,7 @@ const DashboardHome = () => {
                     <h3 className="text-lg font-bold text-gray-300 px-2">To-Do</h3>
                     <ul className="mt-4 flex-1 text-gray-400">
                         {
-                            tasks?.map(task => <Task key={task._id} task={task}></Task>)
+                            tasks?.map(task => <Task key={task._id} task={task} handleDelete={handleDelete}></Task>)
                         }
 
                     </ul>
@@ -81,10 +109,6 @@ const DashboardHome = () => {
                         }
 
                     </ul>
-                    <button onClick={() => document.getElementById('my_modal_3').showModal()} className="w-full px-4 py-2 border border-gray-600 rounded-lg flex items-center gap-4 text-gray-600">
-                        <FaPlus />
-                        <span>Add Task</span>
-                    </button>
                 </div>
                 <div className="bg-gray-950 rounded-xl p-4 max-h-[440px] flex flex-col task">
                     <h3 className="text-lg font-bold text-gray-300 px-2">Completed</h3>
@@ -94,10 +118,6 @@ const DashboardHome = () => {
                         }
 
                     </ul>
-                    <button onClick={() => document.getElementById('my_modal_3').showModal()} className="w-full px-4 py-2 border border-gray-600 rounded-lg flex items-center gap-4 text-gray-600">
-                        <FaPlus />
-                        <span>Add Task</span>
-                    </button>
                 </div>
             </div>
 
