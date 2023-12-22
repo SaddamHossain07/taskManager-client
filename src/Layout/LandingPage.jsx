@@ -1,8 +1,46 @@
-import { Link, Outlet } from 'react-router-dom';
-import logo from '../assets/logo.gif'
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import Logo from '../components/Logo/Logo';
+import UseAuth from '../Hooks/UseAuth/UseAuth';
+import UserInfo from '../components/UserInfo/UserInfo';
 
 const LandingPage = () => {
+    const { user } = UseAuth()
+    const navItems = <>
+        <li>
+            <NavLink to="/" className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? "underline text-purple-700 font-semibold" : ""
+            }>Home
+            </NavLink>
+        </li>
+        <li>
+            <NavLink to="/dashboard" className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? "underline text-purple-700 font-semibold" : ""
+            }>Dashboard
+            </NavLink>
+        </li>
+        <li>
+            <NavLink to="/dashboard" className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? "underline text-purple-700 font-semibold" : ""
+            }>Prices
+            </NavLink>
+        </li>
+        <li>
+            <NavLink to="/dashboard" className={({ isActive, isPending }) =>
+                isPending ? "pending" : isActive ? "underline text-purple-700 font-semibold" : ""
+            }>Contact
+            </NavLink>
+        </li>
+
+        {
+            user ? <UserInfo></UserInfo>
+                : <li>
+                    <NavLink to="/login" className={({ isActive, isPending }) =>
+                        isPending ? "pending" : isActive ? "underline text-purple-700 font-semibold" : ""
+                    }>Login
+                    </NavLink>
+                </li>
+        }
+    </>
     return (
         <div className="drawer max-w-7xl mx-auto">
             <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -19,12 +57,7 @@ const LandingPage = () => {
                     </div>
                     <div className="flex-none hidden lg:block">
                         <ul className="menu menu-horizontal items-center">
-                            {/* Navbar menu content here */}
-                            <li><a>Home</a></li>
-                            <li><Link to="/dashboard">Dashboard</Link></li>
-                            <li><a>Prices</a></li>
-                            <li><a>Contact</a></li>
-                            <li><a className='btn btn-sm btn-outline btn-primary rounded-sm'>Login</a></li>
+                            {navItems}
                         </ul>
                     </div>
                 </div>
@@ -34,12 +67,7 @@ const LandingPage = () => {
             <div className="drawer-side">
                 <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label>
                 <ul className="menu p-4 w-80 min-h-full bg-base-200">
-                    {/* Sidebar content here */}
-                    <li><a>Home</a></li>
-                    <li><a>Plans</a></li>
-                    <li><a>Prices</a></li>
-                    <li><a>Contact</a></li>
-                    <li><a>Login</a></li>
+                    {navItems}
                 </ul>
             </div>
         </div>
